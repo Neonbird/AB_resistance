@@ -10,8 +10,13 @@ Development of an optimal approach for the analysis of *Klebsiella pneumonia* re
 # System requirements for the developed software
 memory
 CPU
-Python3.6
-libaries
+Modules and libraries for Python (>= 3.6):
+* scikit-learn (>= 0.23.1)
+* NumPy (>= 1.13.3)
+* SciPy (>= 0.19.1)
+* joblib (>= 0.11)
+* threadpoolctl (>= 2.0.0)
+
 
 
 # Database
@@ -21,18 +26,71 @@ WGS data was download from NCBI Sequence Read Archive (SRA).
 # Pre-processing of genome sequencing data
 * Quality control was carried out using FastQC, results were inspected using MultiQC.
 * Adapter sequences adjusted in Trimmomatic;
-* Reeds are cleared of point sequencing errors using Bayeshammer __WICH COMMAND__;
-* Creating a 10-mer library using Jellyfish __WHICH COMMAND__.
+* Reeds are cleared of point sequencing errors using Bayeshammer __!!! WICH COMMAND !!!__;
+* Creating a 10-mer library using Jellyfish __!!! WHICH COMMAND !!!__.
 
 ## Embedding of genetic data
 As a method of embedding genetic sequences, k-mers counting has shown itself to be the best way. A 10-mer library was created on paired reads using Jellyfish (see comand above). A counting matrix for paired reads was created for gentamicin resistant strains. From this matrix, training and test data sets were generated with dimensions of 1556 × 524 800 and 220 × 524 800, respectively. 
 
 # Regression task: MIC prediction
-Due to the large number of features it is impossible to build many models, because not enough memory, so we decided to use the following scheme for Feature selecting:
-1) From all features, select the 150,000 most significant using the chi-square criterion on the independence of the samples;
-2) Apply a logarithmic regression model with L1 regularization to this 150,000 features to select the most significant features.
-For this purposes 
+Due to the large number of features it is impossible to build many models, because not enough memory, so we decided to use several schemes for feature selecting and following regression.
+
 ## lasso_regression.py
-### 
+### Method
+One approach was to use logarithmic regression model with L1 regularization (lasso) to extract top of important features, which later planned to be used in random forest. However, we ran out of memory to run a regression on all features. To get around this problem and still use lasso to select features, the following scheme was used:
+1) From all features, select the 50,000 most significant using the chi-square criterion on the independence of the samples;
+2) Apply a logarithmic regression model with L1 regularization to this 50,000 features to select the most significant features.
+For this purposes script `lasso_regression` was written.
+### Input format
+Input is a two numpy arrays in which row correspond to samples and columns correspond to features, beside of last column that correspond to target (MIC concentration). All values for features should be normalised. One file should be train dataset and another should be test dataset.
+#### Example of runnig
+``` lasso_regression.py file_train.npy file_test.npy ```
+
+### Output format
+A standard output is a text that contains information about statistics such as R-squared (r2) and Root Mean Square Error (RMSE) for lasso on test and training datasets, the number of features selected using lasso, as well as statistics r2 and RMSE for random forest on test and training datasets.
+
+#### Example of output
+```
+### LOG LASSO REGRESSION ###
+Test Lasso r2-score is 0.2
+Test Lasso RMSE is 4.5
+Train Lasso r2-score is 0.3
+Train Lasso RMSE is 3.8
+datasets trasformed to 1209 features...
+
+RANDOM FOREST
+selected features by lasso: 1209
+Test Random forest r2-score is 0.5
+Test Random forest RMSE is 2.8
+Train Random forest r2-score is 0.9
+Train Random forest RMSE is 2.2
+DONE
+```
+## ТУТ ДБ CATBOOST??
+
+# Classification task: prescence of resistance
 
 
+
+
+
+# Additional scripts
+## lasso_r2_stats.py
+### Usage
+This script was used to visualize the change of r2 statistic when adding features in a lasso.
+### Input format
+Input is a two numpy arrays in which row correspond to samples and columns correspond to features, beside of last column that correspond to target (MIC concentration). All values for features should be normalised. One file should be train dataset and another should be test dataset.
+#### Example of runnig
+``` lasso_regression.py file_train.npy file_test.npy ```
+### Output
+A standard output is a text that contains information about statistics such as R-squared (r2) for lasso on test and training datasets and the number of features selected using lasso.
+```
+### LOG LASSO REGRESSION ###
+Test Lasso r2-score is 0.2
+Train Lasso r2-score is 0.3
+datasets trasformed to 1209 features by lasso ...
+DONE
+```
+In addition, two files are created in the directory from which the script was run:
+1) `r2_stats.csv` consisting of two lines. The first line contains information about the value of statistics for the test dataset, and the second for training;
+2) `r2_stats.png` is a plot that showing change of statistics r2 (Oy) during selection of features (Ox) by lasso; blue line for train and red line for test.
