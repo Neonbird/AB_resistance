@@ -32,6 +32,10 @@ WGS data was download from NCBI Sequence Read Archive (SRA).
 ## Embedding of genetic data
 As a method of embedding genetic sequences, k-mers counting has shown itself to be the best way. A 10-mer library was created on paired reads using Jellyfish (see comand above). A counting matrix for paired reads was created for gentamicin resistant strains. From this matrix, training and test data sets were generated with dimensions of 1556 × 524 800 and 220 × 524 800, respectively. 
 
+## Create matrix
+In order to collect information about 10-mers counts into a single matrix along with the target value - MIC, we used a script  `make_matrix.py ` created in collaboration with a project colleague. This script placed in her repository https://github.com/anastasia2145/Practice-2020/blob/master/make_matrix.py as a part of project from another organisation.
+
+
 # Regression task: MIC prediction
 Due to the large number of features it is impossible to build many models, because not enough memory, so we decided to use several schemes for feature selecting and following regression.
 
