@@ -66,13 +66,43 @@ Train Random forest r2-score is 0.9
 Train Random forest RMSE is 2.2
 DONE
 ```
+
+## boost.py
+### Usage
+Does a similar method lasso_regression.py, then train gradient basting and evaluates MSE.
+### Input format
+Input two files, a training dataset and a test dataset in the binary form of a numpy module matrix.
+#### Example of runnig
+```boost.py train.npy test.npy ```
+### Output
+Returns to MSE console for loss = deviance and for loss = exponential.
+```
+For example, 
+MSE score for XGBoost loss = deviance: 0.5;
+MSE score for XGBoost loss = exponential = 0.6.
+```
 ## ТУТ ДБ CATBOOST??
 
 # Classification task: prescence of resistance
+## chi2_random_compare.py
+### Usage
+Evaluates the ROC AUC of a dataset with 10,000 random features (k-mers) and 10,000 attributes selected by the Chi-Square criterion on Random Forest with default parameters from the sklearn module.
+### Input format
+Input two files, a training dataset and a test dataset in the binary form of a numpy module matrix.
+#### Example of runnig
+```chi2_random_compare.py -file_name train.npy -file_name_test test.npy ```
+### Output
+Creates a list written in the binary form of numpy module, the first 10 numbers are responsible for ROC AUC calculated on the features selected by the criterion Chi square, the remaining 10 ROC AUC are responsible for random features.
 
-
-
-
+## chi2_catboost.py
+### Usage
+The chi-square criterion is applied to each attribute from the dataset and its importance is assessed in relation to the prediction of a target variable, all values are sorted and taken from 1000 to 10000 attributes in steps of 1000. On which the CatBoost algorithm is subsequently applied.
+### Input format
+Accepts two files, a training dataset and a test dataset in the binary form of a numpy module matrix.
+#### Example of runnig
+```chi2_catboost.py  -file_name train.npy -file_name_test test.npy ```
+### Output
+Creates a list recorded in the binary form of the Numpy module with recorded ROC AUC for each number of selected features.
 
 # Additional scripts
 ## lasso_r2_stats.py
@@ -94,3 +124,13 @@ DONE
 In addition, two files are created in the directory from which the script was run:
 1) `r2_stats.csv` consisting of two lines. The first line contains information about the value of statistics for the test dataset, and the second for training;
 2) `r2_stats.png` is a plot that showing change of statistics r2 (Oy) during selection of features (Ox) by lasso; blue line for train and red line for test.
+
+## prefetch_script.sh
+### Usage
+This script is written in bash, it downloads the file by SRA identifier, converts it to FASTA format, trimmomatic cuts FASTA file by adapters and at the end.
+### Input format
+In filename, the program itself needs to include a text file with the SRA list, and then just run it in the console.
+#### Example of runnig
+```./prefetch_script.sh ```
+### Output
+Returns the trimmed FASTA files.
