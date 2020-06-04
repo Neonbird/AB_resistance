@@ -8,9 +8,10 @@ Development of an optimal approach for the analysis of *Klebsiella pneumonia* re
 4) Development of a model for predicting the presence of antibiotic resistance and a minimum inhibitory concentration based on information on k-mers rom WGS data using machine learning methods.
 
 # System requirements for the developed software
-memory
-CPU
-Modules and libraries for Python (>= 3.6):
+## Server amazone instance c5.4xlarge
+memory: 32GiB
+vCPU: 16
+## Modules and libraries for Python (>= 3.6):
 * scikit-learn (>= 0.23.1)
 * NumPy (>= 1.13.3)
 * SciPy (>= 0.19.1)
@@ -26,8 +27,8 @@ WGS data was download from NCBI Sequence Read Archive (SRA).
 # Pre-processing of genome sequencing data
 * Quality control was carried out using FastQC, results were inspected using MultiQC.
 * Adapter sequences adjusted in Trimmomatic;
-* Reeds are cleared of point sequencing errors using Bayeshammer __!!! WICH COMMAND !!!__;
-* Creating a 10-mer library using Jellyfish __!!! WHICH COMMAND !!!__.
+* Reeds are cleared of point sequencing errors using Bayeshammer;
+* Creating a 10-mer library using Jellyfish.
 
 ## Embedding of genetic data
 As a method of embedding genetic sequences, k-mers counting has shown itself to be the best way. A 10-mer library was created on paired reads using Jellyfish (see comand above). A counting matrix for paired reads was created for gentamicin resistant strains. From this matrix, training and test data sets were generated with dimensions of 1556 × 524 800 and 220 × 524 800, respectively. 
