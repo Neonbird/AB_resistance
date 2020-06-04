@@ -69,7 +69,7 @@ DONE
 
 ## boost.py
 ### Usage
-Does a similar method lasso_regression.py, then train gradient basting and evaluates MSE.
+Does a similar method lasso_regression.py, then train gradient boosting and evaluates MSE.
 ### Input format
 Input two files, a training dataset and a test dataset in the binary form of a numpy module matrix.
 #### Example of runnig
@@ -81,7 +81,6 @@ For example,
 MSE score for XGBoost loss = deviance: 0.5;
 MSE score for XGBoost loss = exponential = 0.6.
 ```
-## ТУТ ДБ CATBOOST??
 
 # Classification task: prescence of resistance
 ## chi2_random_compare.py
