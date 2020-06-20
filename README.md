@@ -21,7 +21,7 @@ vCPU: 16
 
 
 # Database
-Initial information about SRA ids of WGS data and information on the presence of antibiotic resistance and the corresponding MICs were obtained from the PATRIC database for *Klebsiella pneumoniae* strains.
+Initial information about SRA ids of WGS data and information on the presence of antibiotic resistance and the corresponding MICs were obtained from the PATRIC database for *Klebsiella pneumoniae* strains. The resulting table `Klebseilla_gentamicin.csv` is in the folder date.
 WGS data was download from NCBI Sequence Read Archive (SRA).
 
 # Pre-processing of genome sequencing data
@@ -29,16 +29,28 @@ WGS data was download from NCBI Sequence Read Archive (SRA).
 * Adapter sequences adjusted in Trimmomatic;
 * Reeds are cleared of point sequencing errors using Bayeshammer;
 * Creating a 10-mer library using Jellyfish.
+The last two points were performed by our project colleague.
+
+## prefetch_script.sh
+### Usage
+This script is written in bash, it downloads the file by SRA identifier which we took from the `Klebseilla_gentamicin.csv` table, converts it to FASTA format, trimmomatic cuts FASTA file by adapters and at the end.
+### Input format
+In filename, the program itself needs to include a text file with the SRA list, and then just run it in the console.
+#### Example of runnig
+```./prefetch_script.sh ```
+### Output
+Returns the trimmed FASTA files.
 
 ## Embedding of genetic data
 As a method of embedding genetic sequences, k-mers counting has shown itself to be the best way. A 10-mer library was created on paired reads using Jellyfish (see comand above). A counting matrix for paired reads was created for gentamicin resistant strains. From this matrix, training and test data sets were generated with dimensions of 1556 × 524 800 and 220 × 524 800, respectively. 
 
 ## Create matrix
 In order to collect information about 10-mers counts into a single matrix along with the target value - MIC, we used a script  `make_matrix.py ` created in collaboration with a project colleague. This script placed in her repository https://github.com/anastasia2145/Practice-2020/blob/master/make_matrix.py as a part of project from another organisation.
+This script takes a library of k-measures, obtained with the help of Jelly Fish and MIC values from the table `Klebseilla_gentamicin.csv` and makes a dataset, where the columns are all k-mers and the target column with information about MIC, and the objects are bacterial strains. The dataset is then saved in npy format. 
 
 
 # Regression task: MIC prediction
-Due to the large number of features it is impossible to build many models, because not enough memory, so we decided to use several schemes for feature selecting and following regression.
+Due to the large number of features it is impossible to build many models, because not enough memory. We have received other scientific works and have decided  to use this methods for feature selection and following regression.
 
 ## lasso_regression.py
 ### Method
@@ -88,6 +100,8 @@ MSE score for XGBoost loss = exponential = 0.6.
 ```
 
 # Classification task: prescence of resistance
+As well as in the case of the regression task it was necessary to use methods of feature selection. We have studied other scientific works and have decided to use the chi-square method as one of the most labor-intensive and simple, but at the same time rather effective in similar problems, methods of feature selection.
+
 ## chi2_random_compare.py
 ### Usage
 Evaluates the ROC AUC of a dataset with 10,000 random features (k-mers) and 10,000 attributes selected by the Chi-Square criterion on Random Forest with default parameters from the sklearn module.
@@ -128,13 +142,3 @@ DONE
 In addition, two files are created in the directory from which the script was run:
 1) `r2_stats.csv` consisting of two lines. The first line contains information about the value of statistics for the test dataset, and the second for training;
 2) `r2_stats.png` is a plot that showing change of statistics r2 (Oy) during selection of features (Ox) by lasso; blue line for train and red line for test.
-
-## prefetch_script.sh
-### Usage
-This script is written in bash, it downloads the file by SRA identifier, converts it to FASTA format, trimmomatic cuts FASTA file by adapters and at the end.
-### Input format
-In filename, the program itself needs to include a text file with the SRA list, and then just run it in the console.
-#### Example of runnig
-```./prefetch_script.sh ```
-### Output
-Returns the trimmed FASTA files.
