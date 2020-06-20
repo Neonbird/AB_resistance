@@ -29,6 +29,7 @@ WGS data was download from NCBI Sequence Read Archive (SRA).
 * Adapter sequences adjusted in Trimmomatic;
 * Reeds are cleared of point sequencing errors using Bayeshammer;
 * Creating a 10-mer library using Jellyfish.
+
 The last two points were performed by our project colleague.
 
 ## prefetch_script.sh
